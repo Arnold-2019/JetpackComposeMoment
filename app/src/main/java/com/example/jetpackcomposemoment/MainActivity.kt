@@ -40,24 +40,6 @@ class MainActivity : ComponentActivity() {
 }
 
 data class Message(val author: String, val body: String)
-class SampleData {
-    fun tweetsSample() : List<Message> {
-        return listOf(
-            Message("John Doe", "What a sunny day."),
-            Message("Laura", "I am beautiful!"),
-            Message("Arnold", "I am strong!"),
-            Message("John Doe", "What a sunny day."),
-            Message("Laura", "I am beautiful!"),
-            Message("Arnold", "I am strong!"),
-            Message("John Doe", "What a sunny day."),
-            Message("Laura", "I am beautiful!"),
-            Message("Arnold", "I am strong!"),
-            Message("Arnold", "I am strong!"),
-            Message("Arnold", "I am strong!"),
-            Message("Arnold", "I am strong!")
-        )
-    }
-}
 
 @Composable
 fun MessageCard(msg: Message) {
