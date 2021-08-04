@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetpackcomposemoment.ui.theme.JetpackComposeMomentTheme
 
 class MainActivity : ComponentActivity() {
@@ -79,23 +80,51 @@ fun MessageCard(msg: Message) {
 }
 
 @Composable
-fun ProfileCard(userName: String) {
-    Image(
-        modifier = Modifier.fillMaxSize(),
-        contentScale = ContentScale.FillWidth,
-        alignment = Alignment.TopStart,
-        painter = painterResource(id = R.drawable.ic_launcher_background),
-        contentDescription = "User profile image."
-    )
-    Row(horizontalArrangement = Arrangement.End) {
-        Text(text = userName)
+fun ProfileCard() {
+    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+        val (profileImage, avatar, nickName) = createRefs()
+
+        Image(
+            modifier = Modifier
+                .fillMaxSize()
+                .constrainAs(profileImage) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            contentScale = ContentScale.FillWidth,
+            alignment = Alignment.TopStart,
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = "User profile image."
+        )
+
+        Image(
+            modifier = Modifier
+                .constrainAs(avatar) {
+                    top.linkTo(profileImage.bottom)
+                    bottom.linkTo(profileImage.bottom)
+                    end.linkTo(profileImage.end)
+                },
+            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            contentDescription = "avatar"
+        )
+
+        Text(
+            modifier = Modifier
+                .constrainAs(nickName) {
+                    bottom.linkTo(profileImage.bottom)
+                    end.linkTo(avatar.start)
+                }
+                .padding(4.dp),
+            text = SampleData().nickNameSample()
+        )
     }
 }
 
 @Composable
 fun TweetList(messages: List<Message>) {
     LazyColumn {
-        item { ProfileCard(userName = "Ying Wang") }
+        item { ProfileCard() }
         items(messages) { message ->
             MessageCard(msg = message)
         }
