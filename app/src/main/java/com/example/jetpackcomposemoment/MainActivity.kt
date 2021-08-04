@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetpackcomposemoment.ui.theme.JetpackComposeMomentTheme
 
@@ -100,11 +101,13 @@ fun ProfileCard() {
 
         Image(
             modifier = Modifier
+                .size(width = 100.dp, height = 100.dp)
                 .constrainAs(avatar) {
                     top.linkTo(profileImage.bottom)
                     bottom.linkTo(profileImage.bottom)
                     end.linkTo(profileImage.end)
-                },
+                }
+                .padding(end = 16.dp),
             painter = painterResource(id = R.drawable.ic_launcher_foreground),
             contentDescription = "avatar"
         )
@@ -115,8 +118,9 @@ fun ProfileCard() {
                     bottom.linkTo(profileImage.bottom)
                     end.linkTo(avatar.start)
                 }
-                .padding(4.dp),
-            text = SampleData().nickNameSample()
+                .padding(all = 4.dp),
+            text = SampleData().nickNameSample(),
+            style = TextStyle(fontSize = 20.sp)
         )
     }
 }
