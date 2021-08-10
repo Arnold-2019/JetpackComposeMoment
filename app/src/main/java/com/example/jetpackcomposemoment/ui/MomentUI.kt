@@ -2,7 +2,13 @@ package com.example.jetpackcomposemoment.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -15,13 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.jetpackcomposemoment.R
+import coil.compose.rememberImagePainter
 import com.example.jetpackcomposemoment.data.Tweet
 import com.example.jetpackcomposemoment.data.UserProfile
 import com.example.jetpackcomposemoment.data.getSampleAllTweets
@@ -41,10 +46,12 @@ fun MomentScreen(userProfile: UserProfile, tweets: List<Tweet>) {
 fun Profile(userProfile: UserProfile) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (profileImage, avatar, nickName) = createRefs()
+        val profileImageUrl = userProfile.profileImage
+        val avatarUrl = userProfile.avatar
 
         Image(
             modifier = Modifier
-                .fillMaxSize()
+                .size(400.dp)
                 .constrainAs(profileImage) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -53,7 +60,7 @@ fun Profile(userProfile: UserProfile) {
             contentScale = ContentScale.FillWidth,
             alignment = Alignment.TopStart,
             //TODO: replace with default image when loading failed
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            painter = rememberImagePainter(profileImageUrl),
             contentDescription = "User profile image."
         )
 
@@ -67,7 +74,7 @@ fun Profile(userProfile: UserProfile) {
                 }
                 .padding(end = 16.dp),
             //TODO: replace with default image when loading failed
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            painter = rememberImagePainter(avatarUrl),
             contentDescription = "avatar"
         )
 
@@ -96,7 +103,7 @@ fun TweetCard(tweet: Tweet) {
                 .size(40.dp)
                 .clip(CircleShape)
                 .border(0.5.dp, MaterialTheme.colors.secondary, RectangleShape),
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            painter = rememberImagePainter(avatarUrl),
             contentDescription = "Avatar"
         )
 
