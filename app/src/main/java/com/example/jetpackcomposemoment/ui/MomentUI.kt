@@ -1,17 +1,18 @@
 package com.example.jetpackcomposemoment.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -19,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +29,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberImagePainter
 import com.example.jetpackcomposemoment.data.Tweet
 import com.example.jetpackcomposemoment.data.UserProfile
+import com.example.jetpackcomposemoment.data.allTweetsJsonString
 import com.example.jetpackcomposemoment.data.getSampleAllTweets
 import com.example.jetpackcomposemoment.data.getSampleUserProfile
 
@@ -51,7 +52,8 @@ fun Profile(userProfile: UserProfile) {
 
         Image(
             modifier = Modifier
-                .size(400.dp)
+                .fillMaxSize()
+                .height(270.dp)
                 .constrainAs(profileImage) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
@@ -96,13 +98,15 @@ fun TweetCard(tweet: Tweet) {
     val avatarUrl = tweet.sender?.avatarUrl
     val nickname = tweet.sender?.nick ?: "Nick Name"
     val tweetContent = tweet.content ?: ""
+    val photoUrls: List<String> = tweet.images?.let { urls ->
+        urls.map { it.url }
+    } ?: listOfNotNull()
 
     Row(modifier = Modifier.padding(all = 8.dp)) {
         Image(
             modifier = Modifier
                 .size(40.dp)
-                .clip(CircleShape)
-                .border(0.5.dp, MaterialTheme.colors.secondary, RectangleShape),
+                .clip(RoundedCornerShape(4.dp)),
             painter = rememberImagePainter(avatarUrl),
             contentDescription = "Avatar"
         )
@@ -124,6 +128,59 @@ fun TweetCard(tweet: Tweet) {
                     style = MaterialTheme.typography.body2
                 )
             }
+            Spacer(modifier = Modifier.width(4.dp))
+
+            GridView(imageUrls = photoUrls)
+        }
+    }
+}
+
+@Composable
+fun GridView(imageUrls: List<String>) {
+    val numOfImages = imageUrls.size
+    val imageSize: Int = when (numOfImages) {
+        0 -> 0
+        1 -> 150
+        4 -> 100
+        else -> 80
+    }
+
+    when (numOfImages) {
+        in 1 until 4 -> {
+            CustomizedRow(imageUrls.subList(0, numOfImages), imageSize)
+        }
+        4 -> {
+            Column {
+                CustomizedRow(imageUrls.subList(0, 2), imageSize)
+                CustomizedRow(imageUrls.subList(2, 4), imageSize)
+            }
+        }
+        5, 6 -> {
+            Column {
+                CustomizedRow(imageUrls.subList(0, 3), imageSize)
+                CustomizedRow(imageUrls.subList(3, numOfImages), imageSize)
+            }
+        }
+
+        in 7 until 10 -> {
+            Column {
+                CustomizedRow(imageUrls.subList(0, 3), imageSize)
+                CustomizedRow(imageUrls.subList(3, 6), imageSize)
+                CustomizedRow(imageUrls.subList(6, numOfImages), imageSize)
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomizedRow(imageUrls: List<String>, imageSize: Int) {
+    LazyRow(modifier = Modifier.padding(all = 4.dp)) {
+        items(imageUrls) { imageUrl ->
+            Image(
+                modifier = Modifier.size(imageSize.dp),
+                painter = rememberImagePainter(imageUrl),
+                contentDescription = null
+            )
         }
     }
 }
@@ -132,6 +189,6 @@ fun TweetCard(tweet: Tweet) {
 @Composable
 fun ComposablePreview() {
     val userProfile = getSampleUserProfile()
-    val tweets = getSampleAllTweets()
+    val tweets = getSampleAllTweets(allTweetsJsonString)
     MomentScreen(userProfile, tweets)
 }

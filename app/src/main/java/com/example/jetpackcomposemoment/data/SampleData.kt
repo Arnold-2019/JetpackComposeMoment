@@ -4,8 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-
-private val allTweetsJsonString = "[\n" +
+const val allTweetsJsonString = "[\n" +
         "  {\n" +
         "    \"content\": \"沙发！\",\n" +
         "    \"images\": [\n" +
@@ -292,9 +291,9 @@ private val userProfileJsonString = "{\n" +
         "  \"username\": \"hengzeng\"\n" +
         "}"
 
-fun getSampleAllTweets(): List<Tweet> {
+fun getSampleAllTweets(initial: String): List<Tweet> {
     val listType: Type = object : TypeToken<List<Tweet?>?>() {}.type
-    val gsonParseResults: List<Tweet> = Gson().fromJson(allTweetsJsonString, listType)
+    val gsonParseResults: List<Tweet> = Gson().fromJson(initial, listType)
     return gsonParseResults.filter {
         with(it) { sender != null && (content != null || images != null) }
     }
